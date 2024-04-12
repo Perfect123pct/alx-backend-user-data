@@ -4,15 +4,16 @@ filtered_logger module
 """
 
 import re
-
+import os
+import mysql.connector
+from mysql.connector import Connect
+import logging
 
 def filter_datum(fields, redaction, message, separator):
     """
     Replaces specified fields in the log message with redaction.
     """
     return re.sub(r'(?<=^|{})(?:{}=[^{}]+)'.format(separator, '|'.join(fields), separator), f'{redaction}', message)
-
-import logging
 
 
 class RedactingFormatter(logging.Formatter):
@@ -29,7 +30,6 @@ class RedactingFormatter(logging.Formatter):
     def format(self, record: logging.LogRecord) -> str:
         return filter_datum(self.fields, self.REDACTION, super().format(record), self.SEPARATOR)
 
-import logging
 
 PII_FIELDS = ("email", "ssn", "password", "phone", "credit_card")
 
@@ -47,10 +47,6 @@ def get_logger() -> logging.Logger:
     logger.addHandler(stream_handler)
     return logger
 
-import os
-import mysql.connector
-from mysql.connector import Connect
-
 
 def get_db() -> Connect:
     """
@@ -67,8 +63,6 @@ def get_db() -> Connect:
         database=db_name
     )
 
-
-import logging
 
 def main() -> None:
     """
