@@ -15,6 +15,7 @@ def filter_datum(fields, redaction, message, separator):
     """
     return re.sub(r'(?<=^|{})(?:{}=[^{}]+)'.format(separator, '|'.join(fields), separator), f'{redaction}', message)
 
+import logging
 
 class RedactingFormatter(logging.Formatter):
     """ Redacting Formatter class """
@@ -23,7 +24,9 @@ class RedactingFormatter(logging.Formatter):
     FORMAT = "[HOLBERTON] %(name)s %(levelname)s %(asctime)-15s: %(message)s"
     SEPARATOR = ";"
 
-    def __init__(self, fields: Tuple[str]):
+import logging
+
+def __init__(self, fields: Tuple[str]):
         super(RedactingFormatter, self).__init__(self.FORMAT)
         self.fields = fields
 
@@ -33,6 +36,10 @@ class RedactingFormatter(logging.Formatter):
 
 PII_FIELDS = ("email", "ssn", "password", "phone", "credit_card")
 
+import os
+import mysql.connector
+from mysql.connector import Connect
+import logging
 
 def get_logger() -> logging.Logger:
     """
