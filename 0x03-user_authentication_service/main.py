@@ -102,3 +102,54 @@ auth.register_user(email, password)
 print(auth.create_session(email))
 print(auth.create_session("unknown@email.com"))
 
+
+"""
+Main module to interact with the endpoints of the Flask application
+"""
+import requests
+
+BASE_URL = "http://localhost:5000"
+
+
+def register_user(email: str, password: str) -> None:
+    """Register a new user"""
+    url = f"{BASE_URL}/users"
+    data = {"email": email, "password": password}
+    response = requests.post(url, data=data)
+    assert response.status_code == 200
+    print(f"User {email} successfully registered.")
+
+
+def log_in_wrong_password(email: str, password: str) -> None:
+    """Attempt to log in with the wrong password"""
+    url = f"{BASE_URL}/sessions"
+    data = {"email": email, "password": password}
+    response = requests.post(url, data=data)
+    assert response.status_code == 401
+    print(f"Attempted to log in with the wrong password for user {email}.")
+
+
+def log_in(email: str, password: str) -> str:
+    """Log in with correct credentials and return the session ID"""
+    url = f"{BASE_URL}/sessions"
+    data = {"email": email, "password": password}
+    response = requests.post(url, data=data)
+    assert response.status_code == 200
+    session_id = response.json()["session_id"]
+    print(f"User {email} successfully logged in. Session ID: {session_id}")
+    return session_id
+
+
+# Add functions for other tasks...
+
+
+if __name__ == "__main__":
+    EMAIL = "guillaume@holberton.io"
+    PASSWD = "b4l0u"
+    NEW_PASSWD = "t4rt1fl3tt3"
+
+    register_user(EMAIL, PASSWD)
+    log_in_wrong_password(EMAIL, NEW_PASSWD)
+    session_id = log_in(EMAIL, PASSWD)
+    # Add calls to other functions...
+
